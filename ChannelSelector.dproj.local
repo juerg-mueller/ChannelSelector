@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.406,D:\git-win\MidiFilter\UMidiPartitur.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.009,=C:\Users\Jürg Müller\Documents\Embarcadero\Studio\Projekte\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.725,D:\git-win\MidiFilter\ChannelSelectorn.dproj=D:\git-win\MidiFilter\ChannelSelector.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.148,=D:\git-win\MidiFilter\Midi.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.071,D:\git-win\MidiFilter\ChannalSelection.dproj=C:\Users\Jürg Müller\Documents\Embarcadero\Studio\Projekte\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.459,D:\git-win\MidiFilter\ChannalSelection.dproj=D:\git-win\MidiFilter\ChannelSelectorn.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.347,D:\git-win\MidiFilter\UfrmSelector.dfm=C:\Users\Jürg Müller\Documents\Embarcadero\Studio\Projekte\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.715,=D:\git-win\MidiFilter\UMidiPartitur.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.161,=D:\git-win\MidiFilter\UVirtual.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.272,=D:\git-win\teVirtual\ustuff.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.180,=D:\git-win\MidiFilter\UMidiDataStream.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.227,=D:\git-win\MidiFilter\UMyMidiStream.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.211,=D:\git-win\MidiFilter\UMyMemoryStream.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.241,=D:\git-win\teVirtual\teVirtualMIDIdll.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.451,D:\git-win\teVirtual\teVirtualMIDIdll.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.347,D:\git-win\MidiFilter\UfrmSelector.pas=C:\Users\Jürg Müller\Documents\Embarcadero\Studio\Projekte\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.164,=D:\git-win\MidiFilter\UEventArray.pas</Transaction>
+  </Transactions>
+</BorlandProject>
