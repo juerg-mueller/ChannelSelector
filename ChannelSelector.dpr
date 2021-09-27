@@ -9,8 +9,12 @@ uses
 {$if defined(FPC)}
   lcl, Interfaces,
 {$endif}
-  UfrmSelector in 'UfrmSelector.pas' {Channel_Selection},
+{$ifdef LINUX}
+  Urtmidi in 'RtMidi.pas',
+{$else}
   Midi in 'Midi.pas',
+{$endif}
+  UfrmSelector in 'UfrmSelector.pas' {Channel_Selection},
   UEventArray in 'UEventArray.pas',
   UMyMemoryStream in 'UMyMemoryStream.pas',
   UMyMidiStream in 'UMyMidiStream.pas',
@@ -23,6 +27,6 @@ begin
 {$if not defined(FPC)}
   Application.MainFormOnTaskbar := True;
 {$endif}
-Application.CreateForm(TChannel_Selection, Channel_Selection);
+  Application.CreateForm(TChannel_Selection, Channel_Selection);
   Application.Run;
 end.

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (C) 2021 Jürg Müller, CH-5524
 //
 // This program is free software: you can redistribute it and/or modify
@@ -22,11 +22,19 @@ unit UfrmSelector;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+{$ifndef FPC}
+  Windows,
+{$else}
+  LCLType,
+{$endif}
+  Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, UEventArray, UMyMidiStream,
   ComCtrls, ExtCtrls;
 
 type
+
+  { TChannel_Selection }
+
   TChannel_Selection = class(TForm)
     btnLoadMidi: TButton;
     FileOpenDialog1: TOpenDialog;
@@ -113,7 +121,11 @@ type
     procedure btnPlayClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure cbxMidiOutChange(Sender: TObject);
+{$ifdef FPC}
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
+{$else}
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
+{$endif}
     procedure cbxChange(Sender: TObject);
   private
     InstrList: TStringList;
@@ -275,7 +287,7 @@ const
 
 implementation
 
-{$if defined(FPC)}
+{$ifdef FPC}
 {$R *.lfm}
 {$else}
 {$R *.dfm}
@@ -286,8 +298,25 @@ uses
   ShellApi,
 {$ELSE}
 {$ENDIF}
-  Midi, UMidiDataStream;
+{$ifdef LINUX}
+  Urtmidi,
+{$else}
+  Midi,
+{$endif}
+UMidiDataStream;
 
+{$ifdef FPC}
+procedure TChannel_Selection.FormDropFiles(Sender: TObject; const FileNames: array of String);
+var
+  FileName: string;
+begin
+  if Playing then
+    exit;
+
+  if Length(FileNames) > 0 then
+    LoadMidiFile(FileNames[0]);
+end;
+{$else}
 procedure TChannel_Selection.WMDropFiles(var Msg: TWMDropFiles);
 var
   DropH: HDROP;               // drop handle
@@ -315,6 +344,7 @@ begin
   end;
   Msg.Result := 0;
 end;
+{$endif}
 
 function TChannel_Selection.GetCbx(idx: integer): TComboBox;
 begin
@@ -609,9 +639,17 @@ begin
   ClearLabels;
   MidiOutput.GenerateList;
   Playing := false;
+  cbxMidiOut.Items.Clear;
+{$ifdef LINUX}
+  for i := 0 to Length(MidiOutput.DeviceNames)-1 do
+    cbxMidiOut.Items.Append(MidiOutput.DeviceNames[i]);
+{$else}
   cbxMidiOut.Items.Assign(MidiOutput.DeviceNames);
+{$endif}
   cbxMidiOut.ItemIndex := MicrosoftIndex;
+{$ifndef FPC}
   DragAcceptFiles(Self.Handle, true);
+{$endif}
 end;
 
 procedure TChannel_Selection.FormDestroy(Sender: TObject);
@@ -645,7 +683,6 @@ end;
 
 procedure TChannel_Selection.EnableButtons(En: boolean);
 begin
-//  btnLoadMidi.Enabled := En;
   btnSaveMidi.Enabled := En;
   cbxMidiOut.Enabled := En;
 end;
@@ -677,7 +714,11 @@ begin
     btnPlay.Caption := 'Stop';
     EnableButtons(false);
     MidiOutput.Open(MicrosoftIndex);
+  {$ifdef LINUX}
+    Player := TMidiEventPlayer.Create;
+  {$else}
     Player := TMidiEventPlayer.Create(true);
+  {$endif}
     try
       SetLength(Player.MidiEventArr, 0);
       MakeTrack(Player.MidiEventArr, false);
@@ -686,6 +727,9 @@ begin
       Player.Pos := @Pos;
       Player.Playing := @Playing;
       Player.SetPlayEvent := SetPlayEvent;
+    {$ifdef LINUX}
+      Player.Execute;
+    {$else}
       Player.Resume;
       while not Player.Terminated_ do
       begin
@@ -693,6 +737,7 @@ begin
         Application.ProcessMessages;
         Sleep(10);
       end;
+    {$endif}
     finally
       Playing := false;
       btnPlay.Caption := 'Play';

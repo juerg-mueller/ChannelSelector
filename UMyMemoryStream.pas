@@ -23,7 +23,7 @@ unit UMyMemoryStream;
 interface
 
 uses
-  SysUtils, Classes{, Fourier};
+  SysUtils, Classes;
 
 
 type

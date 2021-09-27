@@ -103,10 +103,13 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="RtMidi.pas">
+            <ModuleName>Urtmidi</ModuleName>
+        </DCCReference>
+        <DCCReference Include="Midi.pas"/>
         <DCCReference Include="UfrmSelector.pas">
             <Form>Channel_Selection</Form>
         </DCCReference>
-        <DCCReference Include="Midi.pas"/>
         <DCCReference Include="UEventArray.pas"/>
         <DCCReference Include="UMyMemoryStream.pas"/>
         <DCCReference Include="UMyMidiStream.pas"/>

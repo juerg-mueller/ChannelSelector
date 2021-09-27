@@ -463,7 +463,7 @@ begin
       break;
 
     inc(iTrack);
-    SetLength(EventArray.TrackArr, iTrack);
+    EventArray.SetNewTrackCount(iTrack);
     iEvent := 0;
     offset := 0;
     Event.Clear;
@@ -503,7 +503,7 @@ begin
         begin
           SetLength(EventArray.TrackArr[iTrack-1], 0);
           dec(iTrack);
-          SetLength(EventArray.TrackArr, iTrack);
+          EventArray.SetNewTrackCount(iTrack);
         end;
         break;
       end;
@@ -529,7 +529,7 @@ begin
           case event.d1 of
             1: EventArray.Text_ := BytesToAnsiString(Bytes);
             2: EventArray.copyright := BytesToAnsiString(Bytes);
-            3: EventArray.TrackName := BytesToAnsiString(Bytes);
+            3: EventArray.TrackName[length(EventArray.TrackName)-1] := BytesToAnsiString(Bytes);
             4: EventArray.Instrument := BytesToAnsiString(Bytes);
     {        5,   // Lyrics
             51:  // set tempo

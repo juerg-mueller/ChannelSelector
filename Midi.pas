@@ -1,4 +1,4 @@
-//****************************************************************************/
+﻿//****************************************************************************/
 //* MIDI device classes by Adrian Meyer
 //****************************************************************************/
 //* V1.1 Delphi 6 Windows 2000
@@ -27,12 +27,13 @@ unit Midi;
 interface
 
 uses
-{$IFnDEF FPC}
-  Windows,
+{$IFnDEF LINUX}
+  Windows, mmsystem,
 {$ELSE}
   LCLIntf, LCLType, LMessages,
 {$ENDIF}
-  classes, SysUtils, mmsystem, Math, Contnrs;
+  classes, SysUtils,
+  Math, Contnrs;
 
 const
   // size of system exclusive buffer

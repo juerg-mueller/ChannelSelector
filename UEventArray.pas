@@ -22,22 +22,24 @@ unit UEventArray;
 interface
 
 uses
-  UMyMidiStream, SysUtils, Classes;
+  UMyMidiStream, SysUtils, Classes, Forms;
 
 type
   TMidiEventArray = array of TMidiEvent;
   PMidiEventArray = ^TMidiEventArray;
   TChannelEventArray = array [0..15] of TMidiEventArray;
   TTrackEventArray = array of TMidiEventArray;
+  TAnsiStringArray = array of AnsiString;
 
   TEventArray = class
+  protected
+    TrackName_: TAnsiStringArray; // 03
+    TrackArr_: TTrackEventArray;
   public
     Text_: AnsiString;     // 01
     Copyright: AnsiString; // 02
-    TrackName: AnsiString; // 03
     Instrument: AnsiString;// 04
     DetailHeader: TDetailHeader;
-    TrackArr: TTrackEventArray;
     SingleTrack: TMidiEventArray;
     ChannelArray: TChannelEventArray;
 
@@ -49,7 +51,12 @@ type
     procedure Clear;
     procedure Move_var_len; overload;
     function Transpose(Delta: integer): boolean; overload;
+    procedure SetNewTrackCount(Count: integer);
+    function TrackCount: integer;
 
+    property TrackName: TAnsiStringArray read TrackName_;
+    property TrackArr: TTrackEventArray read TrackArr_;
+    property Track: TTrackEventArray read TrackArr_;
     class procedure ClearEvents(var Events: TMidiEventArray);
     class procedure AppendEvent(var MidiEventArray: TMidiEventArray;
                                 const MidiEvent: TMidiEvent);
@@ -71,8 +78,11 @@ type
   end;
 
   PSetEvent = procedure (const Event: TMidiEvent) of object;
-
+{$ifdef LINUX}
+  TMidiEventPlayer = class
+{$else}
   TMidiEventPlayer = class(TThread)
+{$endif}
   public
     Pos: PString;
     Playing: PBoolean;
@@ -81,9 +91,13 @@ type
 
     SetPlayEvent: PSetEvent;
 
+  {$ifndef LINUX}
     procedure Execute; override;
     procedure StopPlay;
     function Terminated_: boolean;
+  {$else}
+    procedure Execute;
+  {$endif}
   end;
 
 
@@ -93,15 +107,23 @@ type
 implementation
 
 uses
-//  AnsiStrings,
-  UMidiDataStream, Midi;
+{$ifdef LINUX}
+  Urtmidi,
+  UfrmSelector,
+{$else}
+  Midi,
+{$endif}
+{$ifndef FPC}
+  AnsiStrings,
+{$endif}
+  UMidiDataStream;
 
 constructor TEventArray.Create;
 begin
   inherited;
 
   DetailHeader.Clear;
-  SetLength(TrackArr, 0);
+  Clear;
 end;
 
 destructor TEventArray.Destroy;
@@ -117,13 +139,28 @@ var
 begin
   Text_ := '';
   Copyright := '';
-  TrackName := '';
   Instrument := '';
 
   DetailHeader.Clear;
-  for i := 0 to Length(TrackArr)-1 do
+  SetNewTrackCount(0);
+end;
+
+procedure TEventArray.SetNewTrackCount(Count: integer);
+var
+  i: integer;
+begin
+  for i := Count to Length(TrackArr)-1 do
+  begin
     ClearEvents(TrackArr[i]);
-  SetLength(TrackArr, 0);
+    TrackName[i] := '';
+  end;
+  SetLength(TrackArr_, Count);
+  SetLength(TrackName_, Count);
+end;
+
+function TEventArray.TrackCount: integer;
+begin
+  result := Length(TrackArr_);
 end;
 
 function TEventArray.LoadMidiFromFile(FileName: string): boolean;
@@ -804,6 +841,10 @@ begin
         Pos^ := DetailHeader.TicksToString(round(Offset)) +
                   ' of ' + DetailHeader.TicksToString(len);
       sleep(4);
+    {$ifdef LINUX}
+      UfrmSelector.Channel_Selection.lbPlayLength.Caption := Pos^;
+      Application.ProcessMessages;
+    {$endif}
     end;
   end;
   Playing^ := false;
@@ -816,12 +857,18 @@ begin
       SetPlayEvent(Event);
     end;
 
+{$ifdef LINUX}
+  MidiOutput.Reset
+{$else}
   ResetMidi;
+
   Terminate;
   while not Terminated_ do
     Sleep(1);
+{$endif}
 end;
 
+{$ifndef LINUX}
 procedure TMidiEventPlayer.StopPlay;
 begin
   if @Playing <> nil then
@@ -832,6 +879,6 @@ function TMidiEventPlayer.Terminated_: boolean;
 begin
   result := Terminated;
 end;
-
+{$endif}
 
 end.
