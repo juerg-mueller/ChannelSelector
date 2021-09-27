@@ -1,6 +1,6 @@
 Choose Midi Channels for Treble- and Bass-Track
 
-Delphi and Lazarus projects for Windows. For Linux and MAC, RtMidi should be added (todo).
+Delphi and Lazarus projects for Windows. 
 
 You can use this software for preparation for special instruments. This instruments have a trebel and a bass side. I use it as a first step to prepare to generate printed sheet music for the "Steirische" harmonica:
 
@@ -12,3 +12,11 @@ juerg5524.ch/data/midi-sequenzer.zip
 
 
 https://www.musiker-board.de/threads/midi-channels-in-einen-treble-und-einen-bass-track-verteilen.723459/
+
+
+27. Sept. 2021:
+
+Linux/Lazarus Version added. It uses the RtMidi library:
+
+sudo apt install librtmidi-dev
+ 
